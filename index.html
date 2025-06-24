@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lutesse — Cartographie sensible des luttes parisiennes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: #FAFAFA;
+      color: #1A1A1A;
+      line-height: 1.6;
+    }
+
+    header {
+      background-color: #B71C1C;
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    h1 {
+      font-family: 'Merriweather', serif;
+      font-size: 3rem;
+      margin: 0;
+      color: white;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 400;
+      color: #B71C1C;
+      margin-top: 1rem;
+    }
+
+    #subtitle {
+      color: white;
+    }
+
+    section {
+      padding: 3rem 2rem;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    @media screen and (min-width: 1024px) {
+  p {
+    text-align: justify;
+  }
+  .no-justify {
+    text-align: left;
+  }
+}
+
+
+    .trois-colonnes {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    @media (min-width: 768px) {
+      .trois-colonnes {
+        flex-direction: row;
+        justify-content: space-between;
+      }
+      .trois-colonnes div {
+        width: 30%;
+      }
+    }
+
+    .call-to-action {
+      background-color: #F0F0F0;
+      border-left: 6px solid #B71C1C;
+      padding: 2rem;
+      margin-top: 2rem;
+    }
+
+    .call-to-action h2 {
+      margin-top: 0;
+      color: #0D47A1;
+    }
+
+    a.button {
+      display: inline-block;
+      background-color: #B71C1C;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      text-decoration: none;
+      margin-top: 1rem;
+      font-weight: bold;
+      border-radius: 4px;
+    }
+
+    footer {
+      background-color: #1C1C3C;
+      color: #EEE;
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.9rem;
+    }
+
+    footer p {
+      text-align: center;
+    }
+
+    footer a {
+      color: #CCCCFF;
+      text-decoration: none;
+      margin: 0 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Lutesse</h1>
+  <h2 id="subtitle">Cartographie sensible des luttes parisiennes</h2>
+</header>
+
+<!--
+<section>
+  <p><strong>Paris est une ville en lutte.</strong> Ses murs parlent, ses rues se souviennent.<br>
+  <em>Lutesse</em> explore, collecte et géolocalise les traces passées et présentes des mobilisations citoyennes dans la capitale.</p>
+</section>-->
+
+
+
+<section>
+  <h2>À propos</h2>
+  <p>Lutesse est une initiative collaborative née à l’intersection du génie urbain, de la cartographie critique, de la photographie documentaire et de l’engagement citoyen.</p>
+
+  <p>Le projet vise à constituer une base de données ouverte et évolutive recensant les luttes sociales, politiques, féministes, écologiques, culturelles et artistiques qui ont traversé et continuent de façonner l’espace parisien. Il entend ainsi offrir un regard renouvelé sur la ville, en révélant les dynamiques militantes et les inscriptions mémorielles qui y prennent forme.</p>
+
+  <p>Le nom Lutesse est un mot-valise associant « lutte » et « Lutèce », l’ancien nom de Paris à l’époque gallo-romaine. Il symbolise une métropole en perpétuelle mutation, marquée par des siècles de mobilisations populaires et d’effervescence sociale. Par cette référence, Lutesse cherche à articuler mémoire historique et engagement contemporain, en donnant à voir les contours sensibles d’un territoire façonné par ses résistances.</p>
+
+  <a href="#formulaire" class="button">Découvrir les différentes cartographies</a>
+</section>
+
+
+<section>
+ 
+
+   <style>
+    /* Modern style */
+    :root {
+      --main-color: #3182bd;
+      --hover-fill: #ffeda0;
+      --hover-stroke: #feb24c;
+    }
+
+
+    .container {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+}
+    #map {
+      flex: 2;
+      height: 100%;
+    }
+
+@media (max-width: 600px) {
+  .container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  #map {
+    order: 2;
+    height: 60vh;
+    min-height: 300px;
+  }
+
+  .info-panel {
+    order: 1;
+    border-left: none;
+    border-bottom: 1px solid #ddd;
+  }
+
+
+}
+
+
+
+
+    .info-panel {
+      flex: 1;
+      padding: 20px;
+      box-sizing: border-box;
+      background-color: #f5f5f5;
+      border-left: 1px solid #ddd;
+      overflow-y: auto;
+    }
+
+    .leaflet-popup-content {
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .leaflet-container {
+      background: #e9edf1;
+    }
+
+
+
+    @media (max-width: 600px) {
+
+
+      #map {
+        height: 65vh;
+      }
+      }
+    }
+  </style>
+
+<h2>Vue d'ensemble de la base de données</h2>
+<div class="container">
+  <div id="map"></div>
+  <div class="info-panel">
+    <h3>À propos de la base de données</h3>
+    <p>Nombre d'entrées : 0</p>
+    <p>Dernière entrée : 00/00/00</p>
+
+    <p>Les données sont en accès libre, téléchargeables directement sur notre compte GitHub.</p>
+  </div>
+</div>
+
+
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+  const map = L.map('map').setView([48.8566, 2.3522], 12);
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://carto.com/">CartoDB</a>, © OpenStreetMap',
+    subdomains: 'abcd',
+    maxZoom: 19
+  }).addTo(map);
+
+  function defaultStyle(feature) {
+    return {
+      color: "#3182bd",
+      weight: 1,
+      fillColor: "#9ecae1",
+      fillOpacity: 0.5
+    };
+  }
+
+  function highlightFeature(e) {
+    const layer = e.target;
+    layer.setStyle({
+      weight: 2,
+      color: "#feb24c",
+      fillColor: "#ffeda0",
+      fillOpacity: 0.7
+    });
+    layer.bringToFront();
+  }
+
+  function resetHighlight(e) {
+    geojson.resetStyle(e.target);
+  }
+
+  function onFeatureClick(e) {
+    const props = e.target.feature.properties;
+    const nom = props.nom || props.NOM || props.name || "Arrondissement inconnu";
+    e.target.bindPopup(`<b>${nom}</b>`).openPopup();
+  }
+
+  function onEachFeature(feature, layer) {
+    layer.on({
+      mouseover: highlightFeature,
+      mouseout: resetHighlight,
+      click: onFeatureClick
+    });
+  }
+
+  let geojson;
+
+  fetch('https://gael-mgn.github.io/Lutesse/arrondissements.geojson')
+    .then(res => res.json())
+    .then(data => {
+      geojson = L.geoJSON(data, {
+        style: defaultStyle,
+        onEachFeature: onEachFeature
+      }).addTo(map);
+    });
+</script>
+
+</section>
+
+
+<section class="trois-colonnes">
+  <div>
+    <h3>Documenter</h3>
+    <p class="no-justify">Recueillir et archiver une diversité de traces militantes, manifestations, lieux de rassemblement, fresques, slogans, graffitis, hommages, en croisant témoignages, images et récits.</p>
+  </div>
+  <div>
+    <h3>Cartographier</h3>
+    <p class="no-justify">Localiser ces éléments dans une interface interactive, afin de proposer une lecture alternative et critique du territoire parisien, en rendant visibles les formes d’appropriation citoyenne de l’espace urbain.</p>
+  </div>
+  <div>
+    <h3>Partager</h3>
+    <p class="no-justify">Favoriser l’appropriation collective du projet en ouvrant la base de données à toutes les contributions : citoyennes, étudiantes, artistiques ou scientifiques. Lutesse se veut un outil collaboratif et accessible, à l’écoute de toutes les voix.</p>
+  </div>
+</section>
+
+<section class="call-to-action">
+  <h2>Envie de participer ?</h2>
+  <p>Que vous soyez étudiant·e, chercheur·se, photographe, artiste ou simplement témoin, vos apports sont bienvenus. Vous pouvez enrichir la base par vos souvenirs, vos savoirs, en nous contactant par mail.</p>
+  <a href="#formulaire" class="button">Contribuer à Lutesse</a>
+</section>
+
+<section>
+  <h2>Méthodologie et principes de structuration</h2>
+
+  <p>Afin d’orienter le projet Lutesse de manière rigoureuse et accessible, nous avons choisi de recueillir et d’archiver une diversité de traces militantes (manifestations, lieux de rassemblement, fresques, slogans, graffitis, hommages...), en mobilisant des sources plurielles : témoignages oraux, photographies, documents d’archives, récits personnels ou collectifs.</p>
+  <p>Cette approche vise à construire une mémoire urbaine vivante, ancrée dans les pratiques militantes et les inscriptions sensibles de la ville.</p>
+  <p>Dans un souci de lisibilité et de pertinence cartographique, il apparaît essentiel de segmenter le travail en plusieurs volets thématiques ou temporels. Cette démarche permet de produire plusieurs cartes cohérentes et complémentaires, chacune explorant une facette spécifique des mobilisations parisiennes (par exemple : luttes féministes, mobilisations écologiques, résistances historiques, contre-cultures artistiques, etc.).</p>
+  <p>Cette segmentation garantit non seulement une meilleure intelligibilité des données pour les utilisateurs, mais elle offre également une entrée critique et analytique sur la complexité des formes de lutte dans l’espace urbain.</p>
+</section>
+<section>
+  <h2>Une démarche pédagogique et pluridisciplinaire</h2>
+  <p>
+  Ce projet, initié par des étudiant·es de l'EIVP s’inscrit à la fois dans le prolongement de formations en cartographie, en visualisation de données et en sciences sociales, et dans un engagement personnel pour une ville plus lisible, plus partagée et plus habitée.
+Lutesse valorise ainsi une approche sensible et critique de l’urbain : celui que l’on vit, que l’on conteste, que l’on transforme.</p>
+</section>
+
+<footer>
+  <p>© Lutesse — 2025</p>
+  <p>Base de données en accès libre</p>
+  <p>Contact : <a href="mailto:contact@lutesse.fr">contact@lutesse.fr</a></p>
+  <p>Suivre le projet :
+    <a href="#">Instagram</a> |
+    <a href="#">GitHub</a> |
+    <a href="#">LinkedIn</a>
+  </p>
+</footer>
+
+</body>
+</html>
